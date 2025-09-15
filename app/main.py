@@ -19,16 +19,17 @@ from app.routers.checklists import router as checklists_router
 from app.routers.actions import router as actions_router
 from app.routers.stats import router as stats_router
 from app.routers.minigame import router as minigame_router
+from app.routers.state_strange import router as state_strange_router
 from app.services.scheduler import SchedulerService
 from app.bootstrap import attach_context
 
 
 async def set_commands(bot: Bot) -> None:
     commands = [
-        BotCommand(command="start", description="Запуск и меню"),
-        BotCommand(command="library", description="Библиотека практик"),
-        BotCommand(command="journal", description="Дневник состояния"),
-        BotCommand(command="checklists", description="Чек-листы"),
+        BotCommand(command="start", description="Приветствие и выбор состояния"),
+        BotCommand(command="library", description="📚 Библиотека практик"),
+        BotCommand(command="journal", description="🌿 Я здесь"),
+        BotCommand(command="checklists", description="✅ Чек-листы"),
     ]
     await bot.set_my_commands(commands)
 
@@ -71,6 +72,7 @@ async def main() -> None:
     dp.include_router(actions_router)
     dp.include_router(stats_router)
     dp.include_router(minigame_router)
+    dp.include_router(state_strange_router)
 
     # Startup and shutdown hooks
     async def _startup() -> None:
