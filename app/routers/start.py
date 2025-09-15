@@ -30,6 +30,16 @@ async def open_journal(message: Message) -> None:
     await message.answer("Как тебе сейчас?", reply_markup=state_select_kb())
 
 
+@router.message(F.text == "📝 Дневник")
+async def open_journal_legacy(message: Message) -> None:
+    await open_journal(message)
+
+
+@router.message(F.text == "Дневник")
+async def open_journal_plain(message: Message) -> None:
+    await open_journal(message)
+
+
 @router.message(F.text == "✅ Чек-листы")
 async def open_checklists(message: Message) -> None:
     await message.answer("Открываю чек-листы… /checklists")
@@ -54,17 +64,21 @@ async def on_state_select(callback: 'CallbackQuery') -> None:
     mapping = {
         "angry": "attention",
         "confused": "mind",
-        "strange": None,  # use custom guided flow
+        "strange": None,  # custom guided flow
         "anxious": "attention",
         "sad": "emotion",
         "tired": "body",
         "calm": None,
+        "good": None,
     }
     db = get_db()
     pref = mapping.get(code)
     if code == "strange":
         from app.routers.state_strange import start_strange_flow
+        # reply with a new message to keep the original selection visible
+        await cb.message.answer("Принял. Давай сделаем короткую практику:")
         await start_strange_flow(cb)
+        await cb.answer()
         return
     row = None
     if pref:
@@ -75,10 +89,26 @@ async def on_state_select(callback: 'CallbackQuery') -> None:
             import aiosqlite
             choice = random.choice(practices)
             row = await db.get_practice(int(choice["id"]))
+    # prefer specific practices for some states
+    preferred_titles = {
+        "anxious": ["Дыхание 4-7-8", "Пять ощущений", "Уточняющие вопросы"],
+        "sad": ["Благодарность", "Дыхание и заземление", "Отражение чувств"],
+        "tired": ["Расслабление тела", "Мягкое движение"],
+        "angry": ["Несколько версий", "Пять ощущений", "Парафразирование"],
+        "confused": ["Самодоброта к себе", "Слушай свой голос", "Переформулировка"],
+        "good": ["Благодарность"],
+    }
+    for title in preferred_titles.get(code, []):
+        pr = await db.get_practice_by_title(title)
+        if pr:
+            row = pr
+            break
+
     if row is None:
         row = await db.random_practice()
     if row:
-        await cb.message.edit_text("Давай попробуем вот это 👉\n\n" + format_practice(row), reply_markup=practice_actions_kb(int(row["id"])) )
+        # send as a new message to keep the buttons visible for re-selection
+        await cb.message.answer("Давай попробуем вот это 👉\n\n" + format_practice(row), reply_markup=practice_actions_kb(int(row["id"])) )
     await cb.answer()
 
 
