@@ -18,10 +18,10 @@ async def on_done(query: CallbackQuery) -> None:
     if streak >= 7:
         earned = await db.grant_achievement(query.from_user.id, "streak_7")
     points = await db.get_user_points(query.from_user.id)
-    text = "Отлично! Практика отмечена выполненной.\n"
+    text = "✅ Класс, практика засчитана!\n"
     if earned:
         text += "🏆 Достижение: 7 дней подряд!\n"
-    text += f"Очки: {points}"
+    text += f"У тебя уже {points} баллов ресурса 🌱"
     await query.message.edit_text(text)
     await query.answer("Зачтено")
 

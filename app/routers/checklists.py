@@ -19,7 +19,7 @@ async def cmd_checklists(message: Message) -> None:
     code = cls[0]["code"]
     items = await db.list_checklist_items(code)
     triples = [(int(i["id"]), i["title"], int(i["done"])) for i in items]
-    await message.answer("Отмечайте пункты:", reply_markup=checklist_items_kb(triples))
+    await message.answer("Небольшая опора на сейчас — отметь то, что уже сделал:", reply_markup=checklist_items_kb(triples))
 
 
 @router.callback_query(F.data.startswith("cli:"))
@@ -35,7 +35,7 @@ async def on_toggle(query: CallbackQuery) -> None:
     code = cls[0]["code"]
     items = await db.list_checklist_items(code)
     triples = [(int(i["id"]), i["title"], int(i["done"])) for i in items]
-    await query.message.edit_text("Отмечайте пункты:", reply_markup=checklist_items_kb(triples))
+    await query.message.edit_text("Хорошо! Можно добавить ещё что-то из списка:", reply_markup=checklist_items_kb(triples))
     await query.answer()
 
 
