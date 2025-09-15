@@ -5,6 +5,7 @@ from aiogram.types import Message
 from app.context import get_db
 from app.keyboards import main_menu_kb
 from app.keyboards.common import practice_actions_kb
+from app.utils import format_practice
 
 router = Router(name="start")
 
@@ -44,19 +45,6 @@ async def random_practice(message: Message) -> None:
     await message.answer(format_practice(row), reply_markup=practice_actions_kb(int(row["id"])) )
 
 
-def format_practice(row) -> str:
-    import json
-
-    steps = []
-    if row["steps_json"]:
-        try:
-            steps = json.loads(row["steps_json"]) or []
-        except Exception:
-            steps = []
-    steps_text = "\n".join([f"• {s}" for s in steps]) if steps else ""
-    desc = row["description"] or ""
-    timer = row["timer_seconds"]
-    timer_text = f"\n⏱️ Таймер: {timer} сек." if timer else ""
-    return f"<b>{row['title']}</b>\n\n{desc}\n\n{steps_text}{timer_text}"
+    
 
 

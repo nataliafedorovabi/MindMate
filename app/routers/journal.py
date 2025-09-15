@@ -43,7 +43,7 @@ async def on_note(message: Message, state: FSMContext) -> None:
     await message.answer("Записано. Я подберу практику под состояние:")
     row = await db.random_practice()
     if row:
-        from app.routers.start import format_practice
+        from app.utils import format_practice
 
         await message.answer(format_practice(row))
     await state.clear()

@@ -4,7 +4,7 @@ from aiogram.types import CallbackQuery, Message
 
 from app.context import get_db
 from app.keyboards.common import categories_kb, practices_kb, practice_actions_kb
-from app.routers.start import format_practice
+from app.utils import format_practice
 
 router = Router(name="library")
 
