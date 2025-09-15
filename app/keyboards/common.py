@@ -6,10 +6,10 @@ def main_menu_kb() -> ReplyKeyboardMarkup:
         keyboard=[
             [
                 KeyboardButton(text="📚 Библиотека"),
-                KeyboardButton(text="📝 Дневник"),
+                KeyboardButton(text="🌿 Я здесь"),
             ],
             [
-                KeyboardButton(text="🎲 Практика дня"),
+                KeyboardButton(text="🌅 Практика дня"),
                 KeyboardButton(text="✅ Чек-листы"),
             ],
         ],
@@ -51,5 +51,22 @@ def practice_actions_kb(practice_id: int) -> InlineKeyboardMarkup:
             ],
         ]
     )
+
+
+def state_select_kb() -> InlineKeyboardMarkup:
+    # Base states with emojis
+    buttons = [
+        ("😡 Я зол", "angry"),
+        ("😕 Я растерян", "confused"),
+        ("🤔 Мне странно", "strange"),
+        ("😰 Тревожно", "anxious"),
+        ("😔 Грусть", "sad"),
+        ("😴 Устал", "tired"),
+        ("🙂 Спокоен", "calm"),
+    ]
+    rows = []
+    for text, code in buttons:
+        rows.append([InlineKeyboardButton(text=text, callback_data=f"st:{code}")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
