@@ -5,6 +5,7 @@ from contextlib import suppress
 
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
+from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import BotCommand
 from dotenv import load_dotenv
@@ -55,7 +56,7 @@ async def main() -> None:
     if not settings.bot_token:
         raise RuntimeError("TELEGRAM_BOT_TOKEN is not set")
 
-    bot = Bot(token=settings.bot_token, parse_mode=ParseMode.HTML)
+    bot = Bot(token=settings.bot_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
 
