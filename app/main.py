@@ -73,10 +73,10 @@ async def main() -> None:
     dp.include_router(minigame_router)
 
     # Startup and shutdown hooks
-    async def _startup(_: Bot) -> None:
+    async def _startup() -> None:
         await on_startup(bot, db, scheduler)
 
-    async def _shutdown(_: Bot) -> None:
+    async def _shutdown() -> None:
         await on_shutdown(scheduler, db)
 
     dp.startup.register(_startup)
