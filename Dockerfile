@@ -14,8 +14,6 @@ COPY requirements.txt ./
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY app ./app
-COPY .env.example ./
-
 # Note: Do NOT declare VOLUME here. Configure a Railway Volume and mount it to /data in the UI.
 
 CMD ["python", "-m", "app"]
