@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import CallbackQuery, Message
 
-from app.db.db import Database
+from app.context import get_db
 from app.keyboards.common import checklist_items_kb
 
 router = Router(name="checklists")
@@ -10,7 +10,7 @@ router = Router(name="checklists")
 
 @router.message(Command("checklists"))
 async def cmd_checklists(message: Message) -> None:
-    db: Database = message.bot.get("db")
+    db = get_db()
     cls = await db.list_checklists()
     if not cls:
         await message.answer("Пока нет чек-листов")
@@ -24,7 +24,7 @@ async def cmd_checklists(message: Message) -> None:
 
 @router.callback_query(F.data.startswith("cli:"))
 async def on_toggle(query: CallbackQuery) -> None:
-    db: Database = query.message.bot.get("db")
+    db = get_db()
     item_id = int(query.data.split(":", 1)[1])
     await db.toggle_checklist_item(query.from_user.id, item_id)
     # re-render current list (assume same checklist)

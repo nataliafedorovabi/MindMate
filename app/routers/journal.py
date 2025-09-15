@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message
 
-from app.db.db import Database
+from app.context import get_db
 
 
 class JournalStates(StatesGroup):
@@ -33,7 +33,7 @@ async def on_note(message: Message, state: FSMContext) -> None:
     data = await state.get_data()
     st = data.get("current_state", "")
     note = None if message.text.strip() == "-" else message.text.strip()
-    db: Database = message.bot.get("db")
+    db = get_db()
     await db.add_journal_entry(message.from_user.id, st, note)
     # Award for first journal entry
     total = await db.count_journal_entries(message.from_user.id)

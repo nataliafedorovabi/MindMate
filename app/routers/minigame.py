@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message
 
-from app.db.db import Database
+from app.context import get_db
 
 
 class MiniGameStates(StatesGroup):
@@ -26,7 +26,7 @@ async def cmd_minigame(message: Message, state: FSMContext) -> None:
 @router.message(MiniGameStates.ask)
 async def on_answer(message: Message, state: FSMContext) -> None:
     choice = (message.text or "").strip()
-    db: Database = message.bot.get("db")
+    db = get_db()
     if choice == "2":
         await db.add_points(message.from_user.id, 2)
         await message.answer("Верно. Пауза и уточнение помогают снизить напряжение. +2 очка")

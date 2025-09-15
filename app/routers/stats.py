@@ -2,14 +2,14 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from app.db.db import Database
+from app.context import get_db
 
 router = Router(name="stats")
 
 
 @router.message(Command("stats"))
 async def cmd_stats(message: Message) -> None:
-    db: Database = message.bot.get("db")
+    db = get_db()
     points = await db.get_user_points(message.from_user.id)
     total_pr = await db.count_practice_completions(message.from_user.id)
     total_j = await db.count_journal_entries(message.from_user.id)

@@ -1,14 +1,14 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 
-from app.db.db import Database
+from app.context import get_db
 
 router = Router(name="actions")
 
 
 @router.callback_query(F.data.startswith("done:"))
 async def on_done(query: CallbackQuery) -> None:
-    db: Database = query.message.bot.get("db")
+    db = get_db()
     pid = int(query.data.split(":", 1)[1])
     await db.log_practice_completion(query.from_user.id, pid)
     await db.add_points(query.from_user.id, 3)
