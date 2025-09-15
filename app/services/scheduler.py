@@ -11,7 +11,7 @@ from apscheduler.triggers.cron import CronTrigger
 
 from app.config import Settings
 from app.db.db import Database
-from app.routers.start import format_practice
+from app.utils import format_practice
 
 
 @dataclass
